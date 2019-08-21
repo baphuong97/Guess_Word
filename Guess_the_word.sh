@@ -164,7 +164,7 @@ function_play_game()
 
 		if [[ 3 -eq $num_fales_consecutive ]]; then
 		echo
-		echo "You guesed wrong 3times in a raw"
+		echo "You guesed wrong 3 times continuously"
 		echo "--------------------------------"
 			while true; do
 				random=${hidden_word:$(( RANDOM % ${#hidden_word} )):1}
