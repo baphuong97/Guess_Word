@@ -14,7 +14,7 @@ Game is ended if the hidden word is found or your scores is 0"
 	echo "Enter to continue"
 	read -r -s enter 
 	echo "Your score will be calculated:
-Scores = Lenght_of_word + Success_count - Faule_count"
+Scores = Lenght_of_word + Success_count - Failue_count"
 	
 }
 
@@ -50,10 +50,14 @@ function_play_game()
 	
 	printf "Enter a hidden word: "
 	while IFS= read -r -s -n1 word; do
-		if [[ -z $word ]]; then
-			echo
-			break;
+		if [[ -z "$word" ]]; then
+			if [[ !( -z "$hidden_word" ) ]]; then
+				break
+			fi
+			echo "Hidden word is emtpty. Please enter again."
+		printf "Enter a hidden word: "
 		else
+			word=${word,,}
 			case "$word" in
 			*\ *)
 				word_guessed[i]=' '
@@ -67,7 +71,8 @@ function_play_game()
 			hidden_word+=$word
 		fi
 	done
-	
+
+	echo
 	while [ 1 ]; do
 		read -p "Enter a word hint: " c_next
 		if [[ $lenght != ${#c_next} || $c_next =~ [0-9] ]]; then
@@ -249,6 +254,9 @@ while true; do
 	echo "#######################################"
 	echo -n "Input option: "
 	read option
+	if [[ !($option =~ [1-4]) ]]; then
+		echo "INPUT AGAIN OPTION!"
+	fi
 	echo
 	case $option in
 		1)
