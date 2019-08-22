@@ -21,7 +21,6 @@ Scores = Lenght_of_word + Success_count - Failue_count"
 function_view_high_scores()
 {
 	sort -nr hight_score.txt
-	head -5 hight_core.txt
 }
 
 function_show_word()
