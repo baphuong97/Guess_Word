@@ -21,6 +21,7 @@ Scores = Lenght_of_word + Success_count - Failue_count"
 function_view_high_scores()
 {
 	sort -nr hight_score.txt
+	head -5 hight_core.txt
 }
 
 function_show_word()
@@ -32,6 +33,19 @@ function_show_word()
 			echo -n " "
 		fi	
 	done
+}
+
+function_check_character()
+{
+	local lenght=1
+	if [[ $lenght != ${#c_input} || $c_input =~ [0-9] ]]; then
+		echo "Please input must a character!"
+	elif [[ $c_input =~ ^[a-zA-Z] ]]; then
+		c_input=${c_input,,}
+		break
+	else
+		echo "Please input alphabetic character!"
+	fi
 }
 
 function_play_game()
@@ -47,15 +61,25 @@ function_play_game()
 	local num_false=0
 	local num_fales_consecutive=0
 	local lenght_word=0
+	local hidden_word
 	
-	printf "Enter a hidden word: "
+	printf "Enter a hidden word(LOWER 25 characters): "
 	while IFS= read -r -s -n1 word; do
-		if [[ -z "$word" ]]; then
-			if [[ !( -z "$hidden_word" ) ]]; then
+		if [[ -z "$word" || !(25 -ge ${#hidden_word}) ]]; then
+			if [[ !( -z "$hidden_word" ) && ( 25 -ge ${#hidden_word} ) ]]; then
 				break
 			fi
-			echo "Hidden word is emtpty. Please enter again."
-		printf "Enter a hidden word: "
+			echo
+			echo "Hidden word is emtpty or Hidden word more than 25 characters. Please enter again!"
+			hidden_word=""
+			printf "Enter a hidden word(LOWER 25 characters): "
+
+		elif [[ $hidden_word =~ [0-9] ]]; then
+			echo
+			echo "Hidden word have number or special characters. Please enter again!"
+			hidden_word=""
+			printf "Enter a hidden word(LOWER 25 characters): "
+
 		else
 			word=${word,,}
 			case "$word" in
@@ -70,19 +94,13 @@ function_play_game()
 			esac
 			hidden_word+=$word
 		fi
+
 	done
 
 	echo
 	while [ 1 ]; do
-		read -p "Enter a word hint: " c_next
-		if [[ $lenght != ${#c_next} || $c_next =~ [0-9] ]]; then
-			echo "Please input must a character!"
-		elif [[ $c_next =~ ^[a-zA-Z] ]]; then
-			c_next=${c_next,,}
-			break
-		else
-		echo "Please input alphabetic character!"
-		fi
+		read -p "Enter a word hint: " c_input
+		function_check_character
 	done
 	
 	printf "Word: "
@@ -116,14 +134,7 @@ function_play_game()
 				guessed=true
 				echo "Character guessed! Please input another alphabetic character!"
 			else	
-				if [[ $lenght != ${#c_input} || $c_input =~ [0-9] ]]; then
-					echo "Please input must a character!"
-				elif [[ $c_input =~ ^[a-zA-Z] ]]; then
-					c_input=${c_input,,}
-					break
-				else
-					echo "Please input alphabetic character!"
-				fi
+				function_check_character
 			fi
 		done
 	
@@ -238,6 +249,11 @@ function_play_game()
 		echo "Good bye"
 		echo "##########################"
 	fi
+	
+	for (( d=0; d<i; d++)); do
+		character_proposed[$d]=' '
+	done
+	echo ${character_proposed[@]}
 }
 
 while true; do
