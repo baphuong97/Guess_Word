@@ -252,7 +252,7 @@ function_play_game()
 	for (( d=0; d<i; d++)); do
 		character_proposed[$d]=' '
 	done
-	echo ${character_proposed[@]}
+#	echo ${character_proposed[@]}
 }
 
 while true; do
